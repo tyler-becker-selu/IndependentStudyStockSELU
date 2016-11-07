@@ -18,11 +18,5 @@ namespace StockProj495.Controllers
             return _repository.Get(symbols);
         }
 
-        [Route("Live/{ticker}/chart")]
-        public InteractiveChartModel Get()
-        {
-            return null;
-        }
-
     }
 }
