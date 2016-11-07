@@ -11,17 +11,17 @@ namespace StockProj495.Controllers
 {
     public class LiveController : ApiController
     {
-        private LiveRepository _repository = new LiveRepository();
+        private readonly LiveRepository _repository = new LiveRepository();
         // GET: api/LiveStock
         public IEnumerable<StockModel> Get([FromUri]IEnumerable<string> symbols)
         {
             return _repository.Get(symbols);
         }
 
-        // GET: api/LiveStock/5
-        public string Get(string ticker)
+        [Route("Live/{ticker}/chart")]
+        public InteractiveChartModel Get()
         {
-            return ticker;
+            return null;
         }
 
     }

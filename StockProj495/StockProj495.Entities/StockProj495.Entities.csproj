@@ -40,6 +40,8 @@
   <ItemGroup>
     <Compile Include="Models\ApiKeyModel.cs" />
     <Compile Include="Models\ApplicationModel.cs" />
+    <Compile Include="Models\ElementDataModel.cs" />
+    <Compile Include="Models\InteractiveChartModel.cs" />
     <Compile Include="Models\StockModel.cs" />
     <Compile Include="Models\UserModel.cs" />
   </ItemGroup>
