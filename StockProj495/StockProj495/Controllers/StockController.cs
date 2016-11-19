@@ -13,15 +13,10 @@ namespace StockProj495.Controllers
     {
         private readonly HistoryRepository _repository = new HistoryRepository();
         // GET: api/Stock
-        public string Get([FromUri]string date)
+        public IEnumerable<string> Get()
         {
-            return _repository.Get(date);
+            return _repository.GetAllAvailableSymbols();
         }
 
-        // GET: api/Stock/5
-        public string Get(int id)
-        {
-            return "value";
-        }
     }
 }
