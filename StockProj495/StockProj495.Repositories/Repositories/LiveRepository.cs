@@ -29,31 +29,30 @@ namespace StockProj495.Repositories.Repositories
             return stocks;
         }
 
-        public InteractiveChartModel GetChart(InteractiveChartModelInput chart)
-        {
-            var testChart = new InteractiveChartModelInput
+        public object GetChart(object chart)
+        {/*
+            var testChart = new
             {
                 Normalized = false,
                 NumberOfDays = 200,
                 DataPeriod = "Day",
-                Elements = new List<ElementModel>{
-                    new ElementModel{
+                Elements = new List<object>{
+                    new {
                         Symbol = "AAPL",
                         Type ="price",
                         Params = new object[] {"ohlc"}
                     },
-                    new ElementModel{
+                    new {
                         Symbol= "AAPL",
                         Type= "volume"
                     }
                 }
-            };
+            };*/
             var request = new RestRequest("InteractiveChart/json?parameters={parameters}");
-            var json = HttpUtility.UrlEncodeUnicode(SimpleJson.SerializeObject(testChart).ToString());
+            var json = SimpleJson.SerializeObject(testChart);
             request.AddParameter("parameters", json, ParameterType.UrlSegment);
             var response = client.Execute(request);
-            var returnChart = SimpleJson.DeserializeObject<InteractiveChartModel>(response.Content);
-            return returnChart;
+            return response.Content;
         }
     }
 }

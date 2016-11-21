@@ -13,7 +13,7 @@ namespace StockProj495.Controllers
     {
         private readonly LiveRepository _repository = new LiveRepository();
 
-        public InteractiveChartModel Get([FromBody]InteractiveChartModelInput chart)
+        public object Get([FromBody]object chart)
         {
             return _repository.GetChart(chart);
         }
