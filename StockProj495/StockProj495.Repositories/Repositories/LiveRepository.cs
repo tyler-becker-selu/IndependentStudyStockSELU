@@ -30,26 +30,9 @@ namespace StockProj495.Repositories.Repositories
         }
 
         public object GetChart(object chart)
-        {/*
-            var testChart = new
-            {
-                Normalized = false,
-                NumberOfDays = 200,
-                DataPeriod = "Day",
-                Elements = new List<object>{
-                    new {
-                        Symbol = "AAPL",
-                        Type ="price",
-                        Params = new object[] {"ohlc"}
-                    },
-                    new {
-                        Symbol= "AAPL",
-                        Type= "volume"
-                    }
-                }
-            };*/
+        {
             var request = new RestRequest("InteractiveChart/json?parameters={parameters}");
-            var json = SimpleJson.SerializeObject(testChart);
+            var json = SimpleJson.SerializeObject(chart);
             request.AddParameter("parameters", json, ParameterType.UrlSegment);
             var response = client.Execute(request);
             return response.Content;
