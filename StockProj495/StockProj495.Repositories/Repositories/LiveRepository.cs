@@ -7,6 +7,7 @@ using System.Web;
 using StockProj495.Entities.Models;
 using RestSharp;
 using RestSharp.Extensions.MonoHttp;
+using System.Threading;
 
 
 namespace StockProj495.Repositories.Repositories
@@ -17,13 +18,20 @@ namespace StockProj495.Repositories.Repositories
         public IEnumerable<StockModel> Get(IEnumerable<string> symbols) 
         {
             var stocks = new List<StockModel>();
+            int index = 1;
             foreach (string symbol in symbols)
             {
+                if (index > 4)
+                {
+                   Thread.Sleep(1000);
+                   index = 1;
+                }
                 var request = new RestRequest("Quote/json?symbol={symbol}");
                 request.AddParameter("symbol", symbol, ParameterType.UrlSegment);
                 var response = client.Execute(request);
                 var stock = SimpleJson.DeserializeObject<StockModel>(response.Content);
                 stocks.Add(stock);
+                index++;
             }
 
             return stocks;
