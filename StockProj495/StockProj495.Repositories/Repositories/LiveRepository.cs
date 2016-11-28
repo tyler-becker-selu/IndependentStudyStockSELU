@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,33 +9,43 @@ using StockProj495.Entities.Models;
 using RestSharp;
 using RestSharp.Extensions.MonoHttp;
 using System.Threading;
+using Newtonsoft.Json;
 
 
 namespace StockProj495.Repositories.Repositories
 {
     public class LiveRepository : IRepository<StockModel>
     {
-        private readonly RestClient client = new RestClient("http://dev.markitondemand.com/MODApis/Api/v2/");
+        private readonly RestClient client = new RestClient("http://ws.cdyne.com/delayedstockquote/delayedstockquote.asmx/");
         public IEnumerable<StockModel> Get(IEnumerable<string> symbols) 
         {
-            var stocks = new List<StockModel>();
-            int index = 1;
-            foreach (string symbol in symbols)
+            var xmlDeserializer = new RestSharp.Deserializers.XmlDeserializer();
+            var stocks = new List<LiveStockModel>();
+            foreach (var symbol in symbols)
             {
-                if (index > 4)
-                {
-                   Thread.Sleep(1000);
-                   index = 1;
-                }
-                var request = new RestRequest("Quote/json?symbol={symbol}");
-                request.AddParameter("symbol", symbol, ParameterType.UrlSegment);
+                var request = new RestRequest("GetQuote", Method.POST);
+                request.AddParameter("StockSymbol", symbol);
+                request.AddParameter("LicenseKey", 0);
                 var response = client.Execute(request);
-                var stock = SimpleJson.DeserializeObject<StockModel>(response.Content);
-                stocks.Add(stock);
-                index++;
+                try
+                {
+                    var stock = xmlDeserializer.Deserialize<LiveStockModel>(response);
+                    stocks.Add(stock);
+                }
+                catch (Exception e)
+                {
+
+                }
             }
 
-            return stocks;
+            var actualStock = new List<StockModel>();
+            foreach (var stock in stocks)
+            {
+                var itm = StockModel.Map(stock);
+                actualStock.Add(itm);
+            }
+        
+            return actualStock;
         }
 
         public object GetChart(object chart)
