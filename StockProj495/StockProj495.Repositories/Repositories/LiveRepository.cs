@@ -16,14 +16,15 @@ namespace StockProj495.Repositories.Repositories
 {
     public class LiveRepository
     {
-        private readonly RestClient client = new RestClient("https://query.yahooapis.com/v1/public/");
+        private readonly RestClient yahooClient = new RestClient("https://query.yahooapis.com/v1/public/");
+        private readonly RestClient markitClient = new RestClient("http://dev.markitondemand.com/MODApis/Api/v2/");
         public IEnumerable<StockModel> Get(IEnumerable<string> symbols) 
         {
             var stocks = new List<Quote>();
             foreach (var symbol in symbols)
             {
                 var request = new RestRequest("yql?q=select symbol,Ask,LastTradeDate,LastTradeTime,Change,Open,DaysHigh,DaysLow,Volume,PreviousClose,PercentChange,Name from yahoo.finance.quotes where symbol in (\"" + symbol + "\")&format=json&env=store://datatables.org/alltableswithkeys&callback=");
-                var response = client.Execute(request);
+                var response = yahooClient.Execute(request);
                 try
                 {
                     var stock = SimpleJson.DeserializeObject<LiveStockModel>(response.Content);
@@ -45,9 +46,8 @@ namespace StockProj495.Repositories.Repositories
         public object GetChart(object chart)
         {
             var request = new RestRequest("InteractiveChart/json?parameters={parameters}");
-            var json = SimpleJson.SerializeObject(chart);
-            request.AddParameter("parameters", json, ParameterType.UrlSegment);
-            var response = client.Execute(request);
+            request.AddParameter("parameters", chart, ParameterType.UrlSegment);
+            var response = markitClient.Execute(request);
             return response.Content;
         }
     }

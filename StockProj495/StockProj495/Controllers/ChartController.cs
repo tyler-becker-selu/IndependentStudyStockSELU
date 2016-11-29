@@ -13,26 +13,8 @@ namespace StockProj495.Controllers
     {
         private readonly LiveRepository _repository = new LiveRepository();
 
-        public object Get([FromBody]object chart)
+        public object Get([FromUri]object chart)
         {
-            /*
-            var testChart = new
-            {
-                Normalized = false,
-                NumberOfDays = 200,
-                DataPeriod = "Day",
-                Elements = new List<object>{
-                    new {
-                        Symbol = "AAPL",
-                        Type ="price",
-                        Params = new object[] {"ohlc"}
-                    },
-                    new {
-                        Symbol= "AAPL",
-                        Type= "volume"
-                    }
-                }
-            };*/
             return _repository.GetChart(chart);
         }
     }
