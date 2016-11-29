@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,21 +21,22 @@ namespace StockProj495.Entities.Models
         public decimal Open { get; set;}
         public decimal? Close { get; set; }
 
-        public static StockModel Map(LiveStockModel stock)
+        public static StockModel Map(Quote stock)
         {
+            DateTime exactTradeTime = Convert.ToDateTime(stock.LastTradeDate + " " + stock.LastTradeTime);
             var stockModel = new StockModel
             {
-                Symbol = stock.StockSymbol,
-                Volume = stock.StockVolume,
-                Name = stock.CompanyName,  
-                LastPrice = stock.LastTradeAmount,
-                Change = stock.StockChange,
-                ChangePercent = stock.ChangePercent,
-                Timestamp = stock.LastTradeDateTime.ToString(),
-                High = stock.DayHigh,
-                Low = stock.DayLow,
-                Open = stock.OpenAmount,
-                Close = stock.PrevCls
+                Symbol = stock.symbol,
+                Volume = stock.Volume,
+                Name = stock.Name,  
+                LastPrice = stock.Ask,
+                Change = stock.Change,
+                ChangePercent = stock.PercentChange,
+                Timestamp = exactTradeTime.ToString(),
+                High = stock.DaysHigh,
+                Low = stock.DaysLow,
+                Open = stock.Open,
+                Close = stock.PreviousClose
             };
 
             return stockModel;

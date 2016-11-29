@@ -14,23 +14,20 @@ using Newtonsoft.Json;
 
 namespace StockProj495.Repositories.Repositories
 {
-    public class LiveRepository : IRepository<StockModel>
+    public class LiveRepository
     {
-        private readonly RestClient client = new RestClient("http://ws.cdyne.com/delayedstockquote/delayedstockquote.asmx/");
+        private readonly RestClient client = new RestClient("https://query.yahooapis.com/v1/public/");
         public IEnumerable<StockModel> Get(IEnumerable<string> symbols) 
         {
-            var xmlDeserializer = new RestSharp.Deserializers.XmlDeserializer();
-            var stocks = new List<LiveStockModel>();
+            var stocks = new List<Quote>();
             foreach (var symbol in symbols)
             {
-                var request = new RestRequest("GetQuote", Method.POST);
-                request.AddParameter("StockSymbol", symbol);
-                request.AddParameter("LicenseKey", 0);
+                var request = new RestRequest("yql?q=select symbol,Ask,LastTradeDate,LastTradeTime,Change,Open,DaysHigh,DaysLow,Volume,PreviousClose,PercentChange,Name from yahoo.finance.quotes where symbol in (\"" + symbol + "\")&format=json&env=store://datatables.org/alltableswithkeys&callback=");
                 var response = client.Execute(request);
                 try
                 {
-                    var stock = xmlDeserializer.Deserialize<LiveStockModel>(response);
-                    stocks.Add(stock);
+                    var stock = SimpleJson.DeserializeObject<LiveStockModel>(response.Content);
+                    stocks.Add(stock.query.results.quote);
                 }
                 catch (Exception e)
                 {
@@ -38,14 +35,11 @@ namespace StockProj495.Repositories.Repositories
                 }
             }
 
-            var actualStock = new List<StockModel>();
-            foreach (var stock in stocks)
-            {
-                var itm = StockModel.Map(stock);
-                actualStock.Add(itm);
+            var actualStocks = new List<StockModel>();
+            foreach(var stock in stocks){
+                actualStocks.Add(StockModel.Map(stock));
             }
-        
-            return actualStock;
+            return actualStocks;
         }
 
         public object GetChart(object chart)

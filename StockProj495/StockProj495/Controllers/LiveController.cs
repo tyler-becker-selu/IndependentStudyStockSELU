@@ -13,7 +13,7 @@ namespace StockProj495.Controllers
     {
         private readonly LiveRepository _repository = new LiveRepository();
         // GET: api/LiveStock
-        public IEnumerable<StockModel> Get([FromUri]IEnumerable<string> symbols)
+        public IEnumerable<object> Get([FromUri]IEnumerable<string> symbols)
         {
             return _repository.Get(symbols);
         }
